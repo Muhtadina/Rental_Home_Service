@@ -11,7 +11,110 @@ BharaBari is a Rental Home Service website built to enhance the online communica
 ## Tech-Stack 
 > Frontend: HTML, CSS, JavaScript </br>
 > Database: Supabase </br>
-> Back-end: Javascript, Node.js
+> Back-end: Javascript, Node.js </br>
+```
+Frontend (HTML/CSS/JS)
+↓ API calls
+Backend (Node.js / Express)
+↓ Services + Patterns
+Supabase (PostgreSQL + Storage)
+```
 
+## Class Diagrams
+### User-related classes (Factory + Singleton)
+```
+                ┌───────────────────┐
+                │     BaseUser      │
+                │- userId           │
+                │- username         │
+                │- email            │
+                │- role             │
+                │- contact          │
+                └───────┬───────────┘
+                        │
+      ┌─────────────────┼───────────────────┐
+      │                 │                   │
+┌────────────┐   ┌──────────────┐   ┌─────────────┐
+│   Renter   │   │   Landlord   │   │    Admin    │
+└────────────┘   └──────────────┘   └─────────────┘
 
-### 
+        ▲
+        │ factory creates
+        │
+┌─────────────────────────────────────┐
+│            UserFactory              │  ← Factory Pattern
+└─────────────────────────────────────┘
+```
+
+### Flat-related classes (Builder + Facade)
+```
+┌───────────────┐
+│     Flat      │
+│- id           │
+│- location     │
+│- rent         │
+│- rooms        │
+│- landlordId   │
+└───────▲───────┘
+        │
+┌────────────────────┐
+│     FlatBuilder    │  ← Builder Pattern
+└────────────────────┘
+
+┌──────────────────────────┐
+│    FlatServiceFacade     │  ← Facade Pattern
+│ + createFlat()           │
+│ + uploadImages()         │
+│ + updateFlat()           │
+└──────────────────────────┘
+```
+
+### Search Filtering (Strategy Pattern)
+```
+         ┌──────────────────────┐
+         │    SearchStrategy    │ ← interface
+         └───────────┬──────────┘
+                     │
+     ┌───────────────┼──────────────────┐
+     │               │                  │
+┌──────────────┐ ┌──────────────┐ ┌─────────────┐
+│LocationFilter│ │RentFilter    │ │RoomFilter   │  ← Strategy classes
+└──────────────┘ └──────────────┘ └─────────────┘
+
+```
+
+### Negotiation & Notifications (Observer Pattern)
+```
+┌─────────────────────┐
+│  NotificationCenter │  ← Subject
+└─────────────────────┘
+           ▲ notify
+      ┌────┴─────────────┬─────────────┐
+      │                  │             │
+┌────────────┐   ┌─────────────┐ ┌───────────────┐
+│   Renter   │   │   Landlord  │ │    Admin      │  ← Observers
+└────────────┘   └─────────────┘ └───────────────┘
+
+```
+
+## Backend Architecture 
+```
+/BharaBari_Website
+│
+├── /src
+│   ├── /config      → Singleton (DB connection)
+│   ├── /factories   → Factory Pattern
+│   ├── /strategies  → Strategy Pattern
+│   ├── /observer    → Observer Pattern
+│   ├── /builders    → Builder Pattern
+│   ├── /facade      → Facade Pattern
+│   ├── /controllers → Express route handlers
+│   ├── /services    → Business logic
+│   ├── /routes      → API endpoints
+│   └── app.js       → Main server
+│
+├── /template
+|
+|
+└── package.json
+``` 
