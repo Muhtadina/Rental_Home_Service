@@ -10,9 +10,9 @@ CREATE TABLE base_users (
     email            VARCHAR(150) NOT NULL UNIQUE,
     password_hash    VARCHAR(255) NOT NULL,
     contact_number   VARCHAR(20),
-    present_address  TEXT,
+    address          TEXT,
     nid              VARCHAR(20),
-    Rrole            VARCHAR(20) NOT NULL CHECK (role IN ('renter', 'landlord', 'admin')),
+    role             VARCHAR(20) NOT NULL CHECK (role IN ('renter', 'landlord', 'admin')),
     created_at       TIMESTAMP DEFAULT NOW()
 );
 
