@@ -53,6 +53,7 @@ CREATE TABLE flats (
     building       VARCHAR(150) NOT NULL,
     details        TEXT,
     location_      VARCHAR(150) NOT NULL,
+    division       VARCHAR(150) NOT NULL,
     floor_level    VARCHAR(20) NOT NULL,
     catagory       VARCHAR(20) DEFAULT 'family' CHECK (status IN ('family','bachelor','office')),
     rentpermonth   NUMERIC(10,2) NOT NULL,
@@ -98,8 +99,8 @@ CREATE TABLE negotiations (
     renter_id       BIGINT REFERENCES renters(renter_id) ON DELETE CASCADE,
     landlord_id     BIGINT REFERENCES landlords(landlord_id) ON DELETE CASCADE,
     proposed_rent   NUMERIC(10,2),
-    message         TEXT,
-    status          VARCHAR(20) DEFAULT 'pending' 
+    comment         TEXT,
+    nego_status     VARCHAR(20) DEFAULT 'pending' 
                      CHECK (status IN ('pending','approved','rejected')),
     created_at      TIMESTAMP DEFAULT NOW()
 );
@@ -109,11 +110,12 @@ CREATE TABLE negotiations (
 -- ===========================================================
 
 CREATE TABLE appointments (
-    appointment_id BIGSERIAL PRIMARY KEY,
-    negotiation_id BIGINT REFERENCES negotiations(negotiation_id) ON DELETE CASCADE,
-    appointment_time TIMESTAMP NOT NULL,
-    meeting_location VARCHAR(200),
-    created_at      TIMESTAMP DEFAULT NOW()
+    appointment_id    BIGSERIAL PRIMARY KEY,
+    negotiation_id    BIGINT REFERENCES negotiations(negotiation_id) ON DELETE CASCADE,
+    appointment_date  DATE NOT NULL,
+    appointment_time  TIMESTAMP NOT NULL,
+    meeting_location  VARCHAR(200),
+    created_at        TIMESTAMP DEFAULT NOW()
 );
 
 -- ===========================================================
@@ -121,17 +123,17 @@ CREATE TABLE appointments (
 -- ===========================================================
 
 CREATE TABLE reports (
-    report_id     BIGSERIAL PRIMARY KEY,
-    submitted_by  BIGINT REFERENCES base_users(user_id) ON DELETE SET NULL,
-    target_user   BIGINT REFERENCES base_users(user_id) ON DELETE SET NULL,
-    message       TEXT NOT NULL,
-    created_at    TIMESTAMP DEFAULT NOW()
+    report_id       BIGSERIAL PRIMARY KEY,
+    submitted_by    BIGINT REFERENCES base_users(user_id) ON DELETE SET NULL,
+    target_user     BIGINT REFERENCES base_users(user_id) ON DELETE SET NULL,
+    report_comment  TEXT NOT NULL,
+    created_at      TIMESTAMP DEFAULT NOW()
 );
 
 -- ===========================================================
 -- Indexes for faster search
 -- ===========================================================
 
-CREATE INDEX idx_users_role ON base_users(role);
-CREATE INDEX idx_flats_location ON flats(location);
-CREATE INDEX idx_negotiation_status ON negotiations(status);
+CREATE INDEX idx_users_role ON base_users(account_type);
+CREATE INDEX idx_flats_location ON flats(division);
+CREATE INDEX idx_negotiation_status ON negotiations(nego_status);
