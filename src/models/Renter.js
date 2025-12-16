@@ -1,8 +1,9 @@
 export default class Renter {
-  constructor({ full_name, email, password }) {
+  constructor({ full_name, email, password,username }) {
     this.full_name = full_name;
     this.email = email;
     this.password_hash = password;
+    this.username = username;
     this.account_type = "renter";
   }
 
@@ -11,6 +12,7 @@ export default class Renter {
       full_name: this.full_name,
       email: this.email,
       password_hash: this.password_hash,
+      username: this.username,
       account_type: this.account_type
     };
   }

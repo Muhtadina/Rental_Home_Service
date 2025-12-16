@@ -6,7 +6,8 @@ const flatListContainer = document.querySelector(".flat-list");
 
 export async function loadFlats() {
     try {
-        const res = await fetch("http://localhost:5000/routes/flats");
+        const res = await fetch("/routes/flats");
+
         const flats = await res.json();
 
         renderFlats(flats);
